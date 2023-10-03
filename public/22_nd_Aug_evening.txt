@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Page Title</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://maps.googleapis.com;">
+    <!-- Other meta tags, styles, and scripts -->
+</head>
+<body>
+    <!-- Your FTL content here -->
+</body>
+</html>
+
+<script>
+  $(document).ready(function() {
+  $("#customRadio1").click(function() {
+    $(".dd1").toggle(100);
+    $(".dd2").hide(100);
+    $(".dd3").hide(100);
+  });
+  $("#customRadio2").click(function() {
+    $(".dd2").toggle(100);
+    $(".dd1").hide(100);
+    $(".dd3").hide(100);
+  });
+  $("#customRadio3").click(function() {
+	    $(".dd3").toggle(100);
+	    $(".dd1").hide(100);
+	    $(".dd2").hide(100);
+  });
+});</script>
+<form method="post" name="searchDamIns" >
+<input type="hidden" name="wingType" value="admin">              
+<div class="container-fluid mb-5">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card-group dCard">
+        <div class="card bg-gradient-dark p-1 shadow">
+          <div class="card-body p-0">
+            <div class="row">
+	          <div class="col-md-12">
+	          <div id="map_canvas" class="shadow" style="position:relative"></div>
+	          <button type="button" onclick="myFunction()" class="btn btn-dark d-none d-sm-none d-md-block" value="" name="" 
+	          style="float:left;position: absolute;z-index: 1;top: 9.3%;">
+	          <i class="fa fa-align-left" aria-hidden="true"></i> GIS Layer</button>  
+	          </div>
+	          
+	          <#-- Start Legends Box -->
+	          <div id="myDIV" style="">
+                    <div class="col-md-3 pl-1" style="position:absolute;top:7.5vw;left:0.01vw;">
+                       <div class="card legendCard" id="AWLG" style="width:250px;">
+                         <div class="card-body p-3" style="height:510px;overflow-y:scroll;">
+                      <table style="width: 100%;">
+                          <tbody style="font-size:12px;">
+                          <tr>
+                          	<td class="text-center text-white" colspan="2"><h5 style="font-weight:600;">Data Layer View</h5></td>
+                          </tr>
+                          <tr>
+                          	<td class="" colspan="2"><h6 style="font-weight:600;color:#ffae42">
+                          	<div class="custom-control custom-radio cu1stom-control-inline">
+      <input type="radio" onclick='CommonChange(this)' class="custom-control-input" id="customRadio1" name="example2" checked="true">
+      <label class="custom-control-label" for="customRadio1">Admin Boundry&nbsp;</label>
+    </div>
+    <div class="custom-control custom-radio cu1stom-control-inline">
+      <input type="radio" onclick='CommonChange(this)' class="custom-control-input" id="customRadio2" name="example2">
+      <label class="custom-control-label" for="customRadio2">Office Hierarchy&nbsp;</label>
+    </div>
+    
+    <div class="custom-control custom-radio cu1stom-control-inline">
+      <input type="radio" onclick='CommonChange(this)' class="custom-control-input" id="customRadio3" name="example2">
+      <label class="custom-control-label" for="customRadio3">Basin Boundry</label>
+    </div>
+    
+  </h6></td>
+    </tr>
+                          
+                                
+  <tr  class="dd1">
+  <td>State:</td>
+  <td>
+  Maharashtra
+  </td>
+</tr>
+<tr  class="dd1">
+  <td>Region:</td>
+  <td>
+  
+						<select class="form-control custom-select"  id="idcName1"  onchange=getDistrict(this); >
+							<option value="">${uiLabelMap.SelectNameOfCorporation}</option>
+							<#if regionDetailsList?has_content> 
+							<#list regionDetailsList as regionDetailsList>
+								<option value="${regionDetailsList.regionId?if_exists}">${regionDetailsList.regionName?if_exists}</option>
+							</#list>
+							</#if>
+							</select> 
+						
+  	</td>
+</tr>
+<tr class="dd1">
+  <td>District:</td>
+  <td>
+   <select class="form-control custom-select" id="district" name="district" onchange=getTaluk(this);>
+                      <option >Select Name of District</option>
+                      <#if districtMasterList?has_content>
+                      <#list districtMasterList as districtMasterList>
+                     	 <option value="${districtMasterList.districtId?if_exists}">${districtMasterList.name?if_exists}</option>
+                      </#list>
+                      </#if>
+                    </select>
+  </td>
+</tr>
+<tr class="dd1">
+  <td id="tehsilLabel" style="display: none;">Taluka:</td>
+  <td>
+<select class="form-control custom-select" id="tehsil" name="tehsil" onchange=getVillage(this); style="display: none;">
+                        <option >Select Name of tehsil</option>
+                      <#if talukMasterList?has_content>
+                      <#list talukMasterList as talukMasterList>
+                     	 <option value="${talukMasterList.talukId?if_exists}">${talukMasterList.name?if_exists}</option>
+                      </#list>
+                      </#if>
+                    </select>
+
+                    
+                    
+  
+                    
+                    
+  </td>
+</tr><!-- 
+<tr class="dd1">
+  <td>Storage Date:</td>
+  <td>
+  <input type="text" class="datepicker form-control" id="applicableDate" name="applicableDate" title="Enter a date in this format DD-MM-YYYY" placeholder="DD-MM-YYYY">
+  </td>
+</tr> -->
+
+
+  <tr class="dd2" style="display:none">
+  <td>IDC:</td>
+  <td>
+  <#if idcOfficeList?has_content> 
+						<select class="form-control custom-select"  id="idcName"  name="idcName" onchange="belowOffice(this);" title="${uiLabelMap.SelectCorporation}">
+							<option value="">${uiLabelMap.SelectNameOfCorporation}</option>
+							<#list idcOfficeList as idcOfficeList>
+								<option value="${idcOfficeList.officeID}">${idcOfficeList.name?if_exists}</option>
+							</#list>
+							</select> 
+						</#if>
+  </td>
+</tr>
+<tr class="dd2" style="display:none">
+  <td>Region:</td>
+  <td>
+       <select class="form-control custom-select" id="regionName" name="regionName" onchange="belowOffice(this);" title="${uiLabelMap.SelectNameOfRegion}">
+		<option value="">${uiLabelMap.SelectNameOfRegion}</option>
+		</select>
+  </td>
+</tr>
+<tr class="dd2" style="display:none">
+  <td>Circle:</td>
+  <td>
+    <select class="form-control custom-select" id="circleName" name="circleName" onchange="belowOffice(this);" title="${uiLabelMap.SelectNameOfcircle}">
+	<option value="">${uiLabelMap.SelectNameOfcircle}</option>
+	</select> 
+  </td>
+</tr>
+<tr class="dd2" style="display:none">
+  <td>Division:</td>
+  <td>
+  	<select  class="form-control custom-select" id="divName" name="divName" onchange="belowOffice(this);" title="${uiLabelMap.SelectNameOfdivision}">
+		<option value="">${uiLabelMap.SelectNameOfdivision}</option>
+	</select>
+  </td>
+</tr>
+<tr class="dd2" style="display:none">
+  <td>Sub Division:</td>
+  <td>
+	  <select class="form-control custom-select" id="subDivName" name="subDivName" onchange="belowOffice(this);" title="${uiLabelMap.SelectNameOfsubdivision}">
+		<option value="">${uiLabelMap.SelectNameOfsubdivision}</option>
+	</select>
+  </td>
+</tr>
+
+<tr class="dd3" style="display:none">
+  <td>Basin:</td>
+  <td>
+  <select name="cars" class="custom-select" onchange=getSubBasin(this)>
+  				<option value="">Select Basin</option>
+                       <#if basinMasterList?has_content>
+                      <#list basinMasterList as basinMasterList>
+                      <option value="${basinMasterList.basinId?if_exists}">${basinMasterList.basinName?if_exists}</option> 
+                      </#list>
+                      </#if>  
+                    </select>
+  </td>
+</tr><tr class="dd3" style="display:none">
+  <td>Sub-Basin:</td>
+  <td>
+    <select name="subbasin" id="subbasin" class="custom-select">
+      <option value="">Select Sub-Basin</option>
+                      <option>Pune</option>
+                      <option>Amravati</option>
+                                  </select>
+  </td>
+</tr>
+
+             				<tr>
+	             				  <td colspan="2">
+	                					<table id="innerTable" border="1">
+				                          		<td class="text-center" id="rtdas_label" colspan="2"><h6 style="font-weight:600;color:#ffae42">RTDAS Station Detail</h6></td>
+				                      
+				                             
+				                              <tr>
+				                                <td><input type="checkbox"  id="rainfallSt" name="rainfallSt" onchange=getRemoteStationDetails(this);></td>
+				                                <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid"> Rainfall Station</td>
+				                              </tr>
+				                              <tr>
+				                                <td><input type="checkbox"  id="riverSt" name="riverSt" onchange=getRemoteStationDetails(this);></td>
+				                                <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid"> River Water Level & Discharge Station</td>
+				                              </tr>
+				                              <tr>
+				                                <td><input type="checkbox"  id="damSt" name="damSt" onchange=getRemoteStationDetails(this);></td>
+				                                <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid"> Dam Water Level & Spillway Discharge Station</td>
+				                              </tr>
+				                              <tr>
+				                                <td><input type="checkbox"  id="fcsSt" name="fcsSt" onchange=getRemoteStationDetails(this);></td>
+				                                <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid"> Full Climate Station</td>
+				                              </tr>
+				                          	      </table>
+	            				  	</td>
+	            				  	</tr>
+				              <tr>
+				                                <td colspan="2">
+	        										<table id="innerTable_mwrd_admin" >
+				                          				<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">MWRD Asset</h6></td>
+				                    
+	                          
+                             
+											  <tr>
+											  <td><input type="checkbox" id="select_major" name="" value="3" onclick="initialize()"> </td>
+											  <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid">Major Dam  </td>
+											  </tr>
+											
+											  <tr>
+											    <td><input type="checkbox"  id="select_medium" name="" onclick="initialize()"></td>
+											    <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid">Medium Dam</td>
+											  </tr>
+											  
+											  <tr>
+											    <td><input type="checkbox"  id="select_minor" name="" onclick="initialize()"></td>
+											    <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid">Minor Dam</td>
+											  </tr>
+											    </table>
+											  </td>
+											  </tr>
+											<#--  <tr>
+											  <td><input type="checkbox"  id="" name="" value=""></td>
+											  <td><img src="/rainbowstone/pravah/img/tank.png" class="img-fluid"> Tank</td>
+											</tr>-->
+							 <tr>
+     <td colspan="2">
+	        <table id="innerTable_highimp" >
+			    <td><input type="checkbox"  id="highimp" name="high_imp" onclick="initialize()" value=""></td>
+			    <td><img src="/rainbowstone/pravah/img/waterLevel.png" class="img-fluid"> High Important Dam</td>
+            </table>
+    </td>
+ </tr>
+                             <#--  <tr>
+	                          	<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">Inspection</h6></td>
+	                          </tr>
+	                          
+	                          <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/greenA.png" class="img-fluid"> Completed</td>
+                            </tr>
+                              <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/redA.png" class="img-fluid"> In-Completed</td>
+                            </tr>
+                            
+	                          	<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">MWRD Office</h6></td>
+	                          </tr>
+	                          <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/region.png" class="img-fluid"> IDC</td>
+                            </tr>
+                              <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/region.png" class="img-fluid"> Region</td>
+                            </tr>
+                            <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/circle.png" class="img-fluid"> Circle</td>
+                            </tr>
+                            <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/division.png" class="img-fluid"> Division</td>
+                            </tr>
+                            <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/subDivision.png" class="img-fluid"> Sub Division</td>
+                            </tr>
+                             -->
+                         </tbody>
+                        </table>
+                       </div>
+                     </div>
+                   </div>
+                  </div>
+                 <#-- End Legend Box for Screen MD LG-->
+                 
+                 <#-- Start Legends Box for XS SM -->
+	          <div>
+                    <div class="col-md-12 d-block d-sm-block d-md-none mt-3">
+                       <div class="card legendCard" id="AWLG">
+                         <div class="card-body p-3" >
+                       <table style="width: 100%;">
+                          <tbody style="font-size:12px;">
+                          <tr>
+                          	<td class="text-center text-white" colspan="2"><h5 style="font-weight:600;">Data Layer View</h5></td>
+                          </tr>
+                          <tr>
+                          	<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">Admin Boundry</h6></td>
+                          </tr>
+                           <tr >
+                              <td><input type="checkbox"  id="" name="" value="0"></td>
+                              <td><img src="/rainbowstone/pravah/img/boundry.png" class="img-fluid"> State Boundry</td>
+                           </tr>
+                           <tr >
+                              <td><input type="checkbox"  id="" name="" value="0"></td>
+                              <td><img src="/rainbowstone/pravah/img/boundry.png" class="img-fluid"> Region Boundry</td>
+                           </tr>
+                           <tr >
+                              <td><input type="checkbox"  id="" name="" value="1"></td>
+                              <td><img src="/rainbowstone/pravah/img/boundry.png" class="img-fluid"> District Boundry</td>
+                            </tr>
+                            <tr >
+                               <td><input type="checkbox"  id="" name="" value="2"></td>
+                               <td><img src="/rainbowstone/pravah/img/boundry.png" class="img-fluid"> 
+                                Boundry</td>
+                             </tr>
+                          	<tr>
+                          		<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">MWRD Asset</h6></td>
+                          	</tr>
+                             <tr>
+                                <td><input type="checkbox"  id="" name="" value="3"></td>
+                                <td><img src="/rainbowstone/pravah/img/dam.png" class="img-fluid"> Dam</td>
+                              </tr>
+                           	<tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/tank.png" class="img-fluid"> Tank</td>
+                            </tr>
+                             <tr>
+                          
+				                         
+                                <td><input type="checkbox"  id="" name="" value=""></td>
+                                <td><img src="/rainbowstone/pravah/img/waterLevel.png" class="img-fluid"> High Important Dam</td>
+                             
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" id="" name="" value=""></td>
+                                <td><img src="/rainbowstone/pravah/img/waterLevel.png" class="img-fluid"> Water Level Below 20%</td>
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox" id="" name="" value=""></td>
+                                <td><img src="/rainbowstone/pravah/img/waterLevel.png" class="img-fluid"> Water Level Below 50%</td>     
+                              </tr>
+                              <tr>
+                                <td><input type="checkbox"  id="legendSearch_15" name="" value=""></td>
+                                <td><img src="/rainbowstone/pravah/img/waterLevel.png" class="img-fluid"> Water Level Above 50%</td>     
+                              </tr>
+                              <tr>
+	                          	<td class="text-center" colspan="2"><h6 style="font-weight:600;color:#ffae42">MWRD Office</h6></td>
+	                          </tr>
+                              <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/region.png" class="img-fluid"> Region</td>
+                            </tr>
+                            <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/circle.png" class="img-fluid"> Circle</td>
+                            </tr>
+                            <tr>
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/division.png" class="img-fluid"> Division</td>
+                            </tr>
+                            <tr>
+                            
+                              <td><input type="checkbox"  id="" name="" value=""></td>
+                              <td><img src="/rainbowstone/pravah/img/subDivision.png" class="img-fluid"> Sub Division</td>
+                            </tr>
+                         </tbody>
+                        </table>
+                       </div>
+                     </div>
+                   </div>
+                  </div>
+                 <#-- End Legend Box for Screen SM XS-->
+<#if damList?has_content>
+    <#assign a = 1>
+    <#list damList as dam>
+
+            <input type="hidden" name="structureId" id="structureId_${a}" value="${dam.structureId?if_exists}" />
+            <input type="hidden" name="structureName" id="structureName_${a}" value="${dam.structureName?if_exists}" />
+            <input type="hidden" name="latitude" id="latitude_${a}" value="${dam.latitude?if_exists}" />
+            <input type="hidden" name="longitude" id="longitude_${a}" value="${dam.longitude?if_exists}" />
+
+            <input type="hidden" name="idcId${a}" id="idcId_${a}" value="${dam.idcName?if_exists}" />
+            <input type="hidden" name="regionId_${a}" id="regionId_${a}" value="${dam.regionName?if_exists}" />
+            <input type="hidden" name="circleId${a}" id="circleId_${a}" value="${dam.circleName?if_exists}" />
+            <input type="hidden" name="divId${a}" id="divId_${a}" value="${dam.divName?if_exists}" />
+            <input type="hidden" name="subDivId${a}" id="subDivId_${a}" value="${dam.subDivName?if_exists}" />
+			<input type="hidden" name="damType${a}" id="damType_${a}" value="${dam.damType?if_exists}" />
+	        <input type="hidden" name="revenueregion${a}" id="revenueregion_${a}" value="${dam.revenueregion?if_exists}" />
+	        <input type="hidden" name="riverName${a}" id="riverName_${a}" value="${dam.riverName?if_exists}" />
+            <input type="hidden" name="districtId${a}" id="district_id_${a}" value="${dam.district_id?if_exists}" />
+			<input type="hidden" name="talukaId${a}" id="taluka_id_${a}" value="${dam.taluka_id?if_exists}" />
+			<input type="hidden" name=lakeLevelUpdateDate${a}" id="lakeleveldate_${a}" value="${dam.lakeLevelUpdateDate?if_exists}" />
+           	<input type="hidden" name=lake_level${a}" id="lakelevel_${a}" value="${dam.level?if_exists}" />
+           	<input type="hidden" name=liveStorage${a}" id="liveStorage_${a}" value="${dam.liveStorage?if_exists}" />
+        
+     
+        <input type="hidden" name="designed_live_storage_incumec${a}" id="designed_live_storage_incumec${a}" value="<#if dam.designed_live_storage_incumec?has_content>${dam.designed_live_storage_incumec}<#else>1</#if>" />
+
+
+    <#if dam.liveStorage?has_content && dam.designed_live_storage_incumec?has_content && dam.designed_live_storage_incumec != 0>
+    <input type="hidden" name="percentstorage${a}" id="percentagestorage_${a}" value="${((dam.liveStorage?if_exists?number / dam.designed_live_storage_incumec?if_exists?number) * 100)?string}" />
+<#else>
+    <input type="hidden" name="percentstorage${a}" id="percentagestorage_${a}" value="0" />
+</#if>
+
+            <#assign a = a + 1>
+   
+    </#list>
+</#if>
+
+
+
+
+                 <#if masterRemoteLocationList?has_content>
+                 <#assign b=1>
+                 	<#list masterRemoteLocationList as masterRemoteLocationList>
+                 		<input type="hidden" name="remoteLocationId" id="remoteLocationId_${b}" value="${masterRemoteLocationList.mstRemoteStationid?if_exists}" />
+                 		<input type="hidden" name="remoreLocationName" id="remoteLocationName_${b}" value="${masterRemoteLocationList.mstRemoteStationname?if_exists}" />
+                 		<input type="hidden" name="remoteLocationLatitude" id="remoteLocationLatitude_${b}" value="${masterRemoteLocationList.mstlatitude?if_exists}" />
+                 		<input type="hidden" name="remoteLocationLongitude" id="remoteLocationLongitude_${b}" value="${masterRemoteLocationList.mstlongitude?if_exists}" />
+                 	<#assign b=b+1>
+                 	
+                 	</#list>
+                 	<input type="hidden" name="remoteCount" id="remoteCount" value="${b}">
+                 </#if>	
+                   <input type="hidden" name="count" id="count" value="${a}">
+            </div>
+           </div>
+         </div>
+       </div>
+     </div>
+    </div>
+  </div>
+<input type="text" name="dataLoad" id="dataLoad" value="0" />
+<input type="text" name="AllData" id="AllData"/>
+
+</form>
+
+
+
+<script>
+
+
+const myDistrictDictionary = {
+ "518": "1",
+  "517": "2",
+  "990": "3",
+   "520": "4",
+  "528": "5",
+   "529": "6",
+  "516": "8",
+   "521": "10",
+  "530": "11",
+   "525": "12",
+  "526": "13",
+   "527": "14",
+  "531": "15",
+   "522": "29",
+  "515": "30",
+   "523": "31",
+  "500": "32",
+   "512": "33",
+  "514": "34",
+    "524": "35",
+   "511": "36",
+  "513": "37",
+   "503": "38",
+  "501": "39",
+   "502": "41",
+  "499": "42",
+   "498": "43",
+  "497": "44",
+  "510": "45",
+   "508": "46",
+  "509": "47",
+   "504": "48",
+  "506": "49",
+   "507": "50",
+  "505": "51",
+  
+};
+
+
+var points1 = [];
+
+    function loadScript(src, callback) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        if (callback) script.onload = callback;
+        document.getElementsByTagName("head")[0].appendChild(script);
+        script.src = src;
+    }
+
+     loadScript('//maps.googleapis.com/maps/api/js?key=AIzaSyB3rhI5nFjBattpS9FqyIpgMAIzJ7GXhoM&v=5&callback=initialize',
+      function () {
+
+      });
+	window.onload = initialize(0);
+	
+	
+	
+	
+      function initialize(argument) 
+      {	
+      
+
+const myRegionDictionary = {
+  "1001": "{505,506,504,507,508,509}",
+    "1002": "{990,529,528,520,517,518,519}",
+    "1003": "{526,527,530,531,521}",
+      "1004": "{499,498,497,516,522}",
+        "1005": "{510,503,502,501,500}",
+  "1006": "{511,512,513,514,515,523,524,525}"
+
+};
+
+
+     let argument_received=parseInt(argument);
+      	    let argument_received_for_ofc= argument;
+
+      	window.globalVar = "red";
+        var contentString= [];
+        var color="blue";
+        
+		var checkCon=document.getElementById("dataLoad").value;
+        var beed  = {lat: 18.9901, lng: 75.7531};
+		var AdminkBox = document.getElementById("customRadio1").checked;
+		var OfcBox = document.getElementById("customRadio2").checked;
+		var BasinBox = document.getElementById("customRadio3").checked;
+		<#--  aradhana  -->
+		var idcName1= document.getElementById("idcName1").value;
+		var district= document.getElementById("district").value;
+		<#-- for revenue region -->
+		var idcId = document.getElementById("idcName").value;
+		var flag_new=0;
+		var regionId = document.getElementById("regionName").value;
+		var circleId = document.getElementById("circleName").value;
+		var divId = document.getElementById("divName").value;
+		var subDivId = document.getElementById("subDivName").value;
+		
+		
+	var select_major=document.getElementById("select_major").checked;
+	var select_minor=document.getElementById("select_minor").checked;
+	var select_medium=document.getElementById("select_medium").checked;
+	var rainfallSt = document.getElementById("rainfallSt").checked;
+    var riverSt = document.getElementById("riverSt").checked;
+    var damSt = document.getElementById("damSt").checked;
+    var fcsSt = document.getElementById("fcsSt").checked;
+     var highimp_selected = document.getElementById("highimp").checked;
+    
+	var highimp_id=document.getElementById("innerTable_highimp").checked;
+				  var innerTable = document.getElementById("innerTable");
+				  innerTable.style.display = "table";
+				  innerTable = document.getElementById("innerTable_mwrd_admin");
+				  innerTable.style.display = "table";
+				  innerTable = document.getElementById("innerTable_highimp");
+				  innerTable.style.display = "table";
+	
+	if(select_major || select_minor || select_medium)
+	{
+	   alert("fgfgfg");
+       var innerTable = document.getElementById("innerTable");
+       innerTable.style.display = "none";
+        innerTable = document.getElementById("innerTable_highimp");
+				  innerTable.style.display = "none";
+    }
+                    
+	if(rainfallSt || riverSt || damSt || fcsSt){
+
+
+       var innerTable1 = document.getElementById("innerTable_mwrd_admin");
+       innerTable1.style.display = "none";
+        innerTable = document.getElementById("innerTable_highimp");
+				  innerTable.style.display = "none";
+             
+   }
+   	if(highimp_selected){
+
+       var innerTable1 = document.getElementById("innerTable_mwrd_admin");
+       innerTable1.style.display = "none";
+        innerTable = document.getElementById("innerTable");
+				  innerTable.style.display = "none";
+             
+   }
+
+
+    map = new google.maps.Map(document.getElementById('map_canvas'), {
+                minZoom: 3,
+                maxZoom: 17,
+                zoom: 6.7,
+                center: beed
+           });
+           var map_to_send=map;
+           var newPoints=[];
+           var remoteLocationNameTitle=[];
+
+    
+         georssLayer9 = new google.maps.KmlLayer({
+          url: 'http://103.224.243.31:88/NHPKML1/regions_kml/Maharastra_State_Boundary.kml'
+        });
+        georssLayer9.setMap(map);
+
+               var points=[];
+                 var points_major=[];
+                   var points_minor=[];
+                     var points_medium=[];
+	           var RemoteId = [];
+	           var StationName = [];
+	           var damType_Name=[];
+	           var Taluka=[];
+	           var lakelevel=[];
+	           var lakeleveldate=[];
+	           var livestorage=[];
+	           var percentagestorage=[];
+	           
+var points_major_region = [];
+var remoteId_major_region = [];
+var damType_Name_major_region = [];
+var RemoteId_major_region = [];
+var StationName_major_region = [];
+var livestorage_major_region = [];
+var percentagestorage_major_region = [];
+var lakeleveldate_major_region = [];
+var lakelevel_major_region = [];
+
+
+var points_minor_region = [];
+var remoteId_minor_region = [];
+var damType_Name_minor_region = [];
+var RemoteId_minor_region = [];
+var StationName_minor_region = [];
+var livestorage_minor_region = [];
+var percentagestorage_minor_region = [];
+var lakeleveldate_minor_region = [];
+var lakelevel_minor_region = [];
+
+
+
+
+var points_medium_region = [];
+var remoteId_medium_region = [];
+var damType_Name_medium_region = [];
+var RemoteId_medium_region = [];
+var StationName_medium_region = [];
+var livestorage_medium_region = [];
+var percentagestorage_medium_region = [];
+var lakeleveldate_medium_region = [];
+var lakelevel_medium_region = [];
+
+var points_major_district = [];
+var remoteId_major_district = [];
+var damType_Name_major_district = [];
+var RemoteId_major_district = [];
+var StationName_major_district = [];
+var livestorage_major_district = [];
+var percentagestorage_major_district = [];
+var lakeleveldate_major_district = [];
+var lakelevel_major_district = [];
+
+var points_minor_district = [];
+var remoteId_minor_district = [];
+var damType_Name_minor_district = [];
+var RemoteId_minor_district = [];
+var StationName_minor_district = [];
+var livestorage_minor_district = [];
+var percentagestorage_minor_district = [];
+var lakeleveldate_minor_district = [];
+var lakelevel_minor_district = [];
+
+var points_medium_district = [];
+var remoteId_medium_district = [];
+var damType_Name_medium_district = [];
+var RemoteId_medium_district = [];
+var StationName_medium_district = [];
+var livestorage_medium_district = [];
+var percentagestorage_medium_district = [];
+var lakeleveldate_medium_district = [];
+var lakelevel_medium_district = [];
+
+var points_major_taluka = [];
+var remoteId_major_taluka = [];
+var damType_Name_major_taluka = [];
+var RemoteId_major_taluka = [];
+var StationName_major_taluka = [];
+var livestorage_major_taluka = [];
+var percentagestorage_major_taluka = [];
+var lakeleveldate_major_taluka = [];
+var lakelevel_major_taluka = [];
+
+
+var points_minor_taluka = [];
+var remoteId_minor_taluka = [];
+var damType_Name_minor_taluka = [];
+var RemoteId_minor_taluka = [];
+var StationName_minor_taluka = [];
+var livestorage_minor_taluka = [];
+var percentagestorage_minor_taluka = [];
+var lakeleveldate_minor_taluka = [];
+var lakelevel_minor_taluka = [];
+
+
+var points_medium_taluka = [];
+var remoteId_medium_taluka=[];
+var damType_Name_medium_taluka = [];
+var RemoteId_medium_taluka = [];
+var StationName_medium_taluka = [];
+var livestorage_medium_taluka = [];
+var percentagestorage_medium_taluka = [];
+var lakeleveldate_medium_taluka = [];
+var lakelevel_medium_taluka = [];
+
+var flag_district=0;
+
+	           var flag_region_minor=0;
+	           var flag_region_major=0;
+	           var flag_region_medium=0;
+	           
+	            var flag_district_minor=0;
+	           var flag_district_major=0;
+	           var flag_district_medium=0;
+	           
+	            var flag_taluka_minor=0;
+	           var flag_taluka_major=0;
+	           var flag_taluka_medium=0;
+	           var flag_check=0;
+	           
+	           var count=document.getElementById("count").value;
+				if(OfcBox==true)
+				{
+		
+					if(idcId!="" && regionId=="" && circleId=="" && divId=="" && subDivId=="" || idcId!="" && regionId=="All" && circleId=="All" && divId=="All" && subDivId=="All")
+					{
+				
+						for(var i=1;i<count;i++)
+			           	{
+			     
+							if(document.getElementById("idcId_"+i).value==idcId)
+				            {		
+									var lats=document.getElementById("latitude_"+i).value;
+				                    var logs=document.getElementById("longitude_"+i).value;
+				                    var l1=parseFloat(lats);
+				                    var l2=parseFloat(logs);
+				              
+				                    points.push({lat: l1, lng: l2});
+									RemoteId.push(document.getElementById("structureId_"+i).value);
+				                    StationName.push(document.getElementById("structureName_"+i).value);
+									damType_Name.push(document.getElementById("damType_"+i).value);
+							     
+								    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+									lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+									percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+									livestorage.push(document.getElementById("liveStorage_"+i).value);
+								
+									
+									var flag_kml_region=1;
+			
+			
+									if(document.getElementById("select_major").checked || document.getElementById("select_minor").checked || document.getElementById("select_medium").checked )
+										{			
+											flag_check=1;
+													<#--  major minor medium-->
+													  if(document.getElementById("select_major").checked){
+						                         				
+								
+										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+														            {
+													
+													                  // alert("inside");
+													          
+													                    points_major_region.push({lat: l1, lng: l2});
+			
+																		damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																	
+																		RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																		
+													                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+													                     
+													                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+													                       
+													                 
+													                    lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+													          
+													                    lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+													                         
+													                     
+													                    percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+			                 						
+			
+													                    livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+													                  
+												                    }
+										                      flag_region_major=1; 
+										                      
+									
+										     						 }//select-major if
+										      
+										      
+												       if(select_medium){						            				                          
+										                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+												            {
+												           // alert("medium ke andar flag");
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_medium_region.push({lat: l1, lng: l2});
+											                    
+																damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+										                    
+										                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+										                    
+										                    }
+										           
+														}//select_medium
+														
+												 		 if(select_minor){
+															 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+													            {
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_minor_region.push({lat: l1, lng: l2});
+																damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+											                   
+											                    
+											                    lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+											                      
+											                        }
+			
+														flag_region_minor=1; 
+														}//select_minor
+														
+													}//if major med minor
+												
+									
+											}//if_outer
+								
+						}  //for
+							var pointsString = JSON.stringify(points_major_region);
+
+														// Display the points array as a JSON-formatted string in an alert
+														alert(pointsString);
+					 }//if idc
+					else if(idcId!="" && regionId!="" && circleId=="" && divId=="" && subDivId=="" || idcId!="" && regionId!="" && circleId=="All" && divId=="All" && subDivId=="All")
+					{
+
+					 	alert("inside region");
+						for(var i=1;i<count;i++)
+			           	{
+			          
+							if(document.getElementById("regionId_"+i).value==regionId && document.getElementById("idcId_"+i).value==idcId)
+				            {
+				                    var lats=document.getElementById("latitude_"+i).value;
+				                    var logs=document.getElementById("longitude_"+i).value;
+				                    var l1=parseFloat(lats);
+				                    var l2=parseFloat(logs);
+				                    points.push({lat: l1, lng: l2});
+							StationName.push(document.getElementById("structureName_"+i).value);
+							damType_Name.push(document.getElementById("damType_"+i).value);					     
+						    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+							lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+							percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+							livestorage.push(document.getElementById("liveStorage_"+i).value);
+								
+							if(document.getElementById("select_major").checked || document.getElementById("select_minor").checked || document.getElementById("select_medium").checked )
+										{			
+											flag_check=1;
+													<#--  major minor medium-->
+													  if(document.getElementById("select_major").checked){
+						                         				
+								
+										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+														            {
+													
+													                  // alert("inside");
+													          
+													                    points_major_region.push({lat: l1, lng: l2});
+			
+																		damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																	
+																		RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																		
+													                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+													                     
+													                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+													                       
+													                 
+													                    lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+													          
+													                    lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+													                         
+													                     
+													                    percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+			                 						
+			
+													                    livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+													                  
+												                    }
+										                      flag_region_major=1; 
+										                      
+									
+										     						 }//select-major if
+										      
+										      
+												       if(select_medium){						            				                          
+										                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+												            {
+												           // alert("medium ke andar flag");
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_medium_region.push({lat: l1, lng: l2});
+											                    
+																damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+										                    
+										                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+										                    
+										                    }
+										           
+														}//select_medium
+														
+												 		 if(select_minor){
+															 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+													            {
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_minor_region.push({lat: l1, lng: l2});
+																damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+											                   
+											                    
+											                    lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+											                      
+											                        }
+			
+														flag_region_minor=1; 
+														}//select_minor
+														
+													}//if major med minor
+																							
+																												
+																																																
+							}//if
+						}  //for
+					}
+					else if(idcId!="" && regionId!="" && circleId!="" && divId=="" && subDivId=="" || idcId!="" && regionId!="" && circleId!="" && divId=="All" && subDivId=="All")
+					{
+						for(var i=1;i<count;i++)
+			           	{
+							if(document.getElementById("regionId_"+i).value==regionId && document.getElementById("idcId_"+i).value==idcId && document.getElementById("circleId_"+i).value==circleId)
+				            {
+				    	var lats=document.getElementById("latitude_"+i).value;
+				                    var logs=document.getElementById("longitude_"+i).value;
+				                    var l1=parseFloat(lats);
+				                    var l2=parseFloat(logs);
+				              
+				                    points.push({lat: l1, lng: l2});
+									RemoteId.push(document.getElementById("structureId_"+i).value);
+				                    StationName.push(document.getElementById("structureName_"+i).value);
+									damType_Name.push(document.getElementById("damType_"+i).value);
+							     
+								    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+									lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+									percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+									livestorage.push(document.getElementById("liveStorage_"+i).value);
+								
+									
+									var flag_kml_region=1;
+				                    
+				                    	if(document.getElementById("select_major").checked || document.getElementById("select_minor").checked || document.getElementById("select_medium").checked )
+										{			
+											flag_check=1;
+													<#--  major minor medium-->
+													  if(document.getElementById("select_major").checked){
+						                         				
+								
+										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+														            {
+													
+													                  // alert("inside");
+													          
+													                    points_major_region.push({lat: l1, lng: l2});
+			
+																		damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																	
+																		RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																		
+													                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+													                     
+													                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+													                       
+													                 
+													                    lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+													          
+													                    lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+													                         
+													                     
+													                    percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+			                 						
+			
+													                    livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+													                  
+												                    }
+										                      flag_region_major=1; 
+										                      
+									
+										     						 }//select-major if
+										      
+										      
+												       if(select_medium){						            				                          
+										                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+												            {
+												           // alert("medium ke andar flag");
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_medium_region.push({lat: l1, lng: l2});
+											                    
+																damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+										                    
+										                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+										                    
+										                    }
+										           
+														}//select_medium
+														
+												 		 if(select_minor){
+															 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+													            {
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_minor_region.push({lat: l1, lng: l2});
+																damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+											                   
+											                    
+											                    lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+											                      
+											                        }
+			
+														flag_region_minor=1; 
+														}//select_minor
+														
+													}//if major med minor
+																							
+				                    
+				                    
+				                    
+							}
+						}  
+					}
+					else if(idcId!="" && regionId!="" && circleId!="" && divId!="" && subDivId=="" || idcId!="" && regionId!="" && circleId!="" && divId!="" && subDivId=="All")
+					{
+						for(var i=1;i<count;i++)
+			           	{
+							if(document.getElementById("regionId_"+i).value==regionId && document.getElementById("idcId_"+i).value==idcId && document.getElementById("circleId_"+i).value==circleId && document.getElementById("divId_"+i).value==divId)
+				            {
+				                 	var lats=document.getElementById("latitude_"+i).value;
+				                    var logs=document.getElementById("longitude_"+i).value;
+				                    var l1=parseFloat(lats);
+				                    var l2=parseFloat(logs);
+				              
+				                    points.push({lat: l1, lng: l2});
+									RemoteId.push(document.getElementById("structureId_"+i).value);
+				                    StationName.push(document.getElementById("structureName_"+i).value);
+									damType_Name.push(document.getElementById("damType_"+i).value);
+							     
+								    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+									lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+									percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+									livestorage.push(document.getElementById("liveStorage_"+i).value);
+								
+									
+									var flag_kml_region=1;
+				                    
+				                    	if(document.getElementById("select_major").checked || document.getElementById("select_minor").checked || document.getElementById("select_medium").checked )
+										{			
+											flag_check=1;
+													<#--  major minor medium-->
+													  if(document.getElementById("select_major").checked){
+						                         				
+								
+										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+														            {
+													
+													                  // alert("inside");
+													          
+													                    points_major_region.push({lat: l1, lng: l2});
+			
+																		damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																	
+																		RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																		
+													                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+													                     
+													                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+													                       
+													                 
+													                    lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+													          
+													                    lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+													                         
+													                     
+													                    percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+			                 						
+			
+													                    livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+													                  
+												                    }
+										                      flag_region_major=1; 
+										                      
+									
+										     						 }//select-major if
+										      
+										      
+												       if(select_medium){						            				                          
+										                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+												            {
+												           // alert("medium ke andar flag");
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_medium_region.push({lat: l1, lng: l2});
+											                    
+																damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+										                    
+										                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+										                    
+										                    }
+										           
+														}//select_medium
+														
+												 		 if(select_minor){
+															 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+													            {
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_minor_region.push({lat: l1, lng: l2});
+																damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+											                   
+											                    
+											                    lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+											                      
+											                        }
+			
+														flag_region_minor=1; 
+														}//select_minor
+														
+													}//if major med minor
+																							
+							}
+						}  
+					}
+					else if(idcId!="" && regionId!="" && circleId!="" && divId!="" && subDivId!="" || idcId!="" && regionId!="" && circleId!="" && divId!="" && subDivId!="")
+					{
+						            alert("inside sub div");
+						for(var i=1;i<count;i++)
+			           	{
+							if(document.getElementById("regionId_"+i).value==regionId && document.getElementById("idcId_"+i).value==idcId && document.getElementById("circleId_"+i).value==circleId && document.getElementById("divId_"+i).value==divId && document.getElementById("subDivId_"+i).value==subDivId)
+				            {
+				            alert("inside sub div");
+				                    	var lats=document.getElementById("latitude_"+i).value;
+				                    var logs=document.getElementById("longitude_"+i).value;
+				                    var l1=parseFloat(lats);
+				                    var l2=parseFloat(logs);
+				              
+				                    points.push({lat: l1, lng: l2});
+									RemoteId.push(document.getElementById("structureId_"+i).value);
+				                    StationName.push(document.getElementById("structureName_"+i).value);
+									damType_Name.push(document.getElementById("damType_"+i).value);
+							     
+								    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+									lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+									percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+									livestorage.push(document.getElementById("liveStorage_"+i).value);
+								
+									
+									var flag_kml_region=1;
+				                    	if(document.getElementById("select_major").checked || document.getElementById("select_minor").checked || document.getElementById("select_medium").checked )
+										{			
+											flag_check=1;
+													<#--  major minor medium-->
+													  if(document.getElementById("select_major").checked){
+						                         				
+								
+										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+														            {
+													
+													                  // alert("inside");
+													          
+													                    points_major_region.push({lat: l1, lng: l2});
+			
+																		damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																	
+																		RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																		
+													                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+													                     
+													                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+													                       
+													                 
+													                    lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+													          
+													                    lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+													                         
+													                     
+													                    percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+			                 						
+			
+													                    livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+													                  
+												                    }
+										                      flag_region_major=1; 
+										                      
+									
+										     						 }//select-major if
+										      
+										      
+												       if(select_medium){						            				                          
+										                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+												            {
+												           // alert("medium ke andar flag");
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_medium_region.push({lat: l1, lng: l2});
+											                    
+																damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+										                    
+										                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+										                    
+										                    }
+										           
+														}//select_medium
+														
+												 		 if(select_minor){
+															 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+													            {
+											                    var lats=document.getElementById("latitude_"+i).value;
+											                    var logs=document.getElementById("longitude_"+i).value;
+											                    
+											                    var l1=parseFloat(lats);
+											                    
+											                    var l2=parseFloat(logs);
+											                    
+											                    points_minor_region.push({lat: l1, lng: l2});
+																damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+											                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+											                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+											                   
+											                    
+											                    lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+													            lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+													            percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+													            livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+										                    
+											                      
+											                        }
+			
+														flag_region_minor=1; 
+														}//select_minor
+														
+													}//if major med minor
+																							
+							}
+						}  
+					}
+				    <#-- 
+			          	else
+						{
+			                 for(var i=1;i<count;i++)
+			                 {
+			                    var lats=document.getElementById("latitude_"+i).value;
+			                    var logs=document.getElementById("longitude_"+i).value;
+			                    
+			                    var l1=parseFloat(lats);
+			                    
+			                    var l2=parseFloat(logs);
+			                    
+			                    points.push({lat: l1, lng: l2});
+			
+			                    RemoteId.push(document.getElementById("structureId_"+i).value);
+			                    StationName.push(document.getElementById("structureName_"+i).value);
+			             	}   
+			                      
+                 		}
+			          -->	        
+					}
+					  <#-- this for display when we open the webpage-->
+					
+				else if (AdminkBox==true){
+				display_structureId=[];
+				display_latitude=[];
+				display_longitude=[];
+				points=[];
+				StationName=[];
+							
+								var flag_time="kuki";
+								if(document.getElementById("idcName1")!="" ){
+					
+							//	alert("inside_region");
+										var districtValue = parseInt(document.getElementById("district").value);
+										var tehsilValue= parseInt(document.getElementById("tehsil").value);
+										if ( document.getElementById("idcName1")!=="" && flag_time==="kuki" ){
+										   display_latitude=[];
+											display_longitude=[];							
+										 	points=[];
+										 	StationName=[];
+											damType_Name=[];
+											RemoteId=[];
+											Taluka=[];
+											lakelevel=[];
+									        lakeleveldate=[];
+									        livestorage=[];
+									        percentagestorage=[];
+																for(var i=1;i<count;i++)
+													           	{
+																	if(document.getElementById("revenueregion_"+i).value ==document.getElementById("idcName1").value)
+														            {
+														                    var lats=document.getElementById("latitude_"+i).value;
+														                    var logs=document.getElementById("longitude_"+i).value;
+														                    var l1=parseFloat(lats);
+														                    var l2=parseFloat(logs);
+														              
+														                    points.push({lat: l1, lng: l2});
+																			RemoteId.push(document.getElementById("structureId_"+i).value);
+														                    StationName.push(document.getElementById("structureName_"+i).value);
+																			damType_Name.push(document.getElementById("damType_"+i).value);
+																	     
+																		    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+																			
+																			var flag_kml_region=1;
+																			
+																if(select_major!="" || select_minor!="" || select_medium!="" )
+																{			
+																	flag_check=1;
+																			<#--  major minor medium-->
+																			  if(select_major){
+												                         				
+														
+						   										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+																				            {
+																			
+																			                   
+																			                    points_major_region.push({lat: l1, lng: l2});
+									
+																									damType_Name_major_region.push(document.getElementById("damType_"+i).value);
+																							
+																											RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																								
+																			                    RemoteId_major_region.push(document.getElementById("structureId_"+i).value);
+																			                     
+																			                    StationName_major_region.push(document.getElementById("structureName_"+i).value);
+																			                       
+																			                 
+																			                       lakeleveldate_major_region.push(document.getElementById("lakeleveldate_"+i).value);
+																			          
+																			                         lakelevel_major_region.push(document.getElementById("lakelevel_"+i).value);
+																			                         
+																			                     
+																			                             percentagestorage_major_region.push(document.getElementById("percentagestorage_"+i).value);
+						                             						
+
+																			                          livestorage_major_region.push(document.getElementById("liveStorage_"+i).value);
+																			                  
+																		                    }
+																                      flag_region_major=1; 
+																                      
+															
+																     						 }//select-major if
+																      
+																      
+																		       if(select_medium){						            				                          
+																                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+																		            {
+																		           // alert("medium ke andar flag");
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_medium_region.push({lat: l1, lng: l2});
+																	                    
+																						damType_Name_medium_region.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_medium_region.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_medium_region.push(document.getElementById("structureName_"+i).value);
+																                    
+																                        lakeleveldate_medium_region.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_medium_region.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_medium_region.push(document.getElementById("percentagestorage_"+i).value);
+																			                          livestorage_medium_region.push(document.getElementById("liveStorage_"+i).value);
+																                    
+																                    
+																                    }
+																                     flag_region_medium=1; 
+																				}//select_medium
+																				
+																		 		 if(select_minor){
+																					 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+																			            {
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_minor_region.push({lat: l1, lng: l2});
+																						damType_Name_minor_region.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_minor_region.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_minor_region.push(document.getElementById("structureName_"+i).value);
+																	                   
+																	                    
+																	                       lakeleveldate_minor_region.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_minor_region.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_minor_region.push(document.getElementById("percentagestorage_"+i).value);
+																			                          livestorage_minor_region.push(document.getElementById("liveStorage_"+i).value);
+																                    
+																	                      
+																	                        }
+
+																				flag_region_minor=1; 
+																				}//select_minor
+																				
+																			}//if major med minor
+																	
+																	   }//if
+															
+																}  //for
+																		var pointsString = JSON.stringify(StationName);
+
+														// Display the points array as a JSON-formatted string in an alert
+														//alert(pointsString);
+																color="blue";
+																flag_time="tooti"
+  
+												}//if   
+																
+																
+									 if(!isNaN(districtValue) && districtValue >= 496 && districtValue <= 991 && flag_time=="tooti")
+									  	{				
+									  	//alert("inside_district");	
+									  	
+									  	
+											  if(districtValue in myDistrictDictionary){
+											  
+											  		flag_district=1;
+											  }
+											  else{
+											   		flag_district=0;
+											  }
+											  								
+									  																						
+											display_latitude=[];
+											display_longitude=[];							
+										 	points=[];
+										 	StationName=[];
+											damType_Name=[];
+											RemoteId=[];
+											Taluka=[];
+												lakelevel=[];
+									        lakeleveldate=[];
+									        livestorage=[];
+									        percentagestorage=[];
+														for(var i=1;i<count;i++)
+											           	{
+											          
+															if(document.getElementById("district_id_"+i).value == district )
+												            {
+												       
+												                    var lats=document.getElementById("latitude_"+i).value;
+												                    var logs=document.getElementById("longitude_"+i).value;
+												                    var l1=parseFloat(lats);
+														              
+														                    var l2=parseFloat(logs);
+														                  
+												                    points.push({lat: l1, lng: l2});
+																	RemoteId.push(document.getElementById("structureId_"+i).value);
+												                    StationName.push(document.getElementById("structureName_"+i).value);
+																    damType_Name.push(document.getElementById("damType_"+i).value);
+																  //  Taluka.push(document.getElementById("taluka_id_"+i).value);
+																    
+																        lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+																    
+																    if(select_major!="" || select_minor!="" || select_medium!="" )
+																	{
+																         flag_check=2;
+																    	<#--  major minor medium-->
+														 					  if(select_major){
+												                         				
+														
+						   										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+																				            {
+																			
+																			                   // alert("inside major district");
+																			                    points_major_district.push({lat: l1, lng: l2});
+																									damType_Name_major_district.push(document.getElementById("damType_"+i).value);
+																											RemoteId_major_district.push(document.getElementById("structureId_"+i).value);
+																			                    StationName_major_district.push(document.getElementById("structureName_"+i).value);
+																		                   
+																		                    
+																		                     
+																		                       
+																			                       lakeleveldate_major_district.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_major_district.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_major_district.push(document.getElementById("percentagestorage_"+i).value);
+																			                          livestorage_major_district.push(document.getElementById("liveStorage_"+i).value);
+																			                    
+																		                       
+																		                        
+																		                          }
+																                      flag_district_major=1; 
+																                      
+															
+																     						 }//select-major if
+																      
+																      
+																		       if(select_medium){						            				                          
+																                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+																		            {
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_medium_district.push({lat: l1, lng: l2});
+																	                    
+																						damType_Name_medium_district.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_medium_district.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_medium_district.push(document.getElementById("structureName_"+i).value);
+																                   
+																                    
+																                      lakeleveldate_medium_district.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_medium_district.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_medium_district.push(document.getElementById("percentagestorage_"+i).value);
+																			                          livestorage_medium_district.push(document.getElementById("liveStorage_"+i).value);
+																                    
+																                      
+																                        }
+																                     flag_district_medium=1; 
+																				}//select_medium
+																				
+																		 		 if(select_minor){
+																					 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+																			            {
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_minor_district.push({lat: l1, lng: l2});
+																						damType_Name_minor_district.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_minor_district.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_minor_district.push(document.getElementById("structureName_"+i).value);
+																	                    
+																	                    
+																	                     lakeleveldate_minor_district.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_minor_district.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_minor_district.push(document.getElementById("percentagestorage_"+i).value);
+																			                          livestorage_minor_district.push(document.getElementById("liveStorage_"+i).value);
+																                    
+																	                    
+																	                    
+																	                    }
+
+																				flag_district_minor=1; 
+																				}//select_minor
+																				
+ 																			}//if maj medium minor
+																    
+																    
+																    
+															}//if
+														
+													
+														}//for
+													flag_time="mumu";
+												color="red";
+														
+											}	//if
+									
+										if(!isNaN(document.getElementById("tehsil").value) && flag_time=="mumu")
+										  	{												
+										  	display_latitude=[];
+				                            display_longitude=[];
+							
+											//alert(argument_received);
+											points=[];
+											StationName=[];
+											damType_Name=[];
+											points_not_map=[];
+											RemoteId=[];
+											Taluka=[];
+												
+												  lakelevel=[];
+										           lakeleveldate=[];
+										           livestorage=[];
+										           percentagestorage=[];
+															for(var i=1;i<count;i++)
+												           	{
+																if(parseInt(document.getElementById("taluka_id_"+i).value) ===parseInt((document.getElementById("tehsil").value))  )
+													            {	
+													            		
+													                    var lats=document.getElementById("latitude_"+i).value;
+													                    var logs=document.getElementById("longitude_"+i).value;
+													                     var l1=parseFloat(lats);
+														                  //  display_latitude.push(l1);
+														                    var l2=parseFloat(logs);
+														                 //   display_longitude.push(l2);
+													                    points.push({lat: l1, lng: l2});
+																		RemoteId.push(document.getElementById("structureId_"+i).value);
+													                    StationName.push(document.getElementById("structureName_"+i).value);
+													                   	damType_Name.push(document.getElementById("damType_"+i).value); 
+													                 //  	Taluka.push(document.getElementById("taluka_id_"+i).value);
+													                   	
+													                   	    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+													                   	 
+													                   	
+													             if(select_major!="" || select_minor!="" || select_medium!="" )
+																{			
+																	flag_check=3;
+																			<#--  major minor medium-->
+																			  if(select_major){
+												                         				
+														
+						   										                      if((document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major"))
+																				            {
+																			
+																			                    
+																			                    points_major_taluka.push({lat: l1, lng: l2});
+																									damType_Name_major_taluka.push(document.getElementById("damType_"+i).value);
+																											RemoteId_major_taluka.push(document.getElementById("structureId_"+i).value);
+																			                    RemoteId_major_taluka.push(document.getElementById("structureId_"+i).value);
+																			                    StationName_major_taluka.push(document.getElementById("structureName_"+i).value);
+																			                    
+																			                    
+																			                    
+																			                     lakeleveldate_major_taluka.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_major_taluka.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_major_taluka.push(document.getElementById(" percentagestorage_"+i).value);
+																			                          livestorage_major_taluka.push(document.getElementById("liveStorage_"+i).value);
+																		                    }
+																                      flag_taluka_major=1; 
+																                      
+															
+																     						 }//select-major if
+																      
+																      
+																		       if(select_medium){						            				                          
+																                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+																		            {
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_medium_taluka.push({lat: l1, lng: l2});
+																	                    
+																						damType_Name_medium_taluka.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_medium_taluka.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_medium_taluka.push(document.getElementById("structureName_"+i).value);
+																                   
+																                    
+																                      lakeleveldate_medium_taluka.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_medium_taluka.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_medium_taluka.push(document.getElementById(" percentagestorage_"+i).value);
+																			                          livestorage_medium_taluka.push(document.getElementById("liveStorage_"+i).value);
+																                      
+																                        }
+																                     flag_taluka_medium=1; 
+																				}//select_medium
+																				
+																		 		 if(select_minor){
+																					 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+																			            {
+																	                    var lats=document.getElementById("latitude_"+i).value;
+																	                    var logs=document.getElementById("longitude_"+i).value;
+																	                    
+																	                    var l1=parseFloat(lats);
+																	                    
+																	                    var l2=parseFloat(logs);
+																	                    
+																	                    points_minor_taluka.push({lat: l1, lng: l2});
+																						damType_Name_minor_taluka.push(document.getElementById("damType_"+i).value);
+																	                    RemoteId_minor_taluka.push(document.getElementById("structureId_"+i).value);
+																	                    StationName_minor_taluka.push(document.getElementById("structureName_"+i).value);
+																	                    
+																	                    
+																	                    
+																                      lakeleveldate_minor_taluka.push(document.getElementById("lakeleveldate_"+i).value);
+																			                         lakelevel_minor_taluka.push(document.getElementById("lakelevel_"+i).value);
+																			                             percentagestorage_minor_taluka.push(document.getElementById(" percentagestorage_"+i).value);
+																			                          livestorage_minor_taluka.push(document.getElementById("liveStorage_"+i).value);
+																	                    }
+
+																				flag_taluka_minor=1; 
+																				}//select_minor
+																				
+																			}//if major med minor
+																	
+													                   	
+																}
+													
+															}
+														flag_time="tutu";
+													color="blue";
+												
+														 //alert(StationName);
+															var pointsString = JSON.stringify(points);
+
+														// Display the points array as a JSON-formatted string in an alert
+														//alert(pointsString);
+												}	
+					
+								
+											
+											}		
+								
+							if((flag_check!=1 && flag_check!=2 && flag_check!=3)){
+								
+								   	if(select_major!="" || select_minor!="" || select_medium!="" )
+											{
+										//	alert("hiii");
+												if(select_major){
+													 var markers = [];
+								
+									
+													//alert(argument_received);
+													points_major=[];
+													StationName=[];
+													damType_Name=[];
+													points_not_map=[];
+													RemoteId=[];
+														Taluka=[];
+														
+												   lakelevel=[];
+										         lakeleveldate=[];
+										          livestorage=[];
+										         percentagestorage=[];
+	           
+													  // Remove existing markers
+													  for (var i = 0; i < markers.length; i++) {
+													    markers[i].setMap(null);
+													  }
+													  markers = [];
+													    for(var i=1;i<count;i++)
+											                 {
+											                    
+												                 if(document.getElementById("damType_"+i).value == "मोठे" || document.getElementById("damType_"+i).value=="Major")
+														            {
+														          
+												                    var lats=document.getElementById("latitude_"+i).value;
+															                    var logs=document.getElementById("longitude_"+i).value;
+															                     var l1=parseFloat(lats);
+																                    var l2=parseFloat(logs);
+																           
+															                    points_major.push({lat: l1, lng: l2});
+															                  //  alert(points_major);
+																				RemoteId.push(document.getElementById("structureId_"+i).value);
+															                    StationName.push(document.getElementById("structureName_"+i).value);
+															                   	damType_Name.push(document.getElementById("damType_"+i).value); 
+															                  // 	Taluka.push(document.getElementById("taluka_id_"+i).value);
+												                    
+														                        lakelevel.push(document.getElementById("lakelevel_"+i).value);
+														                          
+																				lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																		
+																				percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			
+																				livestorage.push(document.getElementById("liveStorage_"+i).value);
+																			
+																				
+												                    }
+									       					}
+													
+													  // Add KML Layer for major dams
+												
+															
+						       					}
+						       					if(select_medium){
+						       					   lakelevel=[];
+										           lakeleveldate=[];
+										           livestorage=[];
+										           percentagestorage=[];
+	           
+						       					  	display_latitude=[];
+						                            display_longitude=[];
+									
+													//alert(argument_received);
+													points_medium=[];
+													StationName=[];
+													damType_Name=[];
+													points_not_map=[];
+													RemoteId=[];
+														Taluka=[];
+						       					 for(var i=1;i<count;i++)
+								                 {
+									                 if(document.getElementById("damType_"+i).value == "मध्यम" || document.getElementById("damType_"+i).value=="Medium")
+											            {
+									        var lats=document.getElementById("latitude_"+i).value;
+															                    var logs=document.getElementById("longitude_"+i).value;
+															                     var l1=parseFloat(lats);
+																                   
+																                    var l2=parseFloat(logs);
+																            
+															                    points_medium.push({lat: l1, lng: l2});
+																				RemoteId.push(document.getElementById("structureId_"+i).value);
+															                    StationName.push(document.getElementById("structureName_"+i).value);
+															                   	damType_Name.push(document.getElementById("damType_"+i).value); 
+															                 //  	Taluka.push(document.getElementById("taluka_id_"+i).value);
+									                   
+									                    						    lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+									                     
+									                      
+									                        }
+						       					}//for
+						       						
+						       						var flag_for_medium=1;
+						       						set_icon("yellow");
+						       					}
+						       					if(select_minor){
+						       					
+						       					  lakelevel=[];
+										           lakeleveldate=[];
+										          livestorage=[];
+										         percentagestorage=[];
+						       					
+						       					  	display_latitude=[];
+						                            display_longitude=[];
+									
+													//alert(argument_received);
+													points_minor=[];
+													StationName=[];
+													damType_Name=[];
+													points_not_map=[];
+													RemoteId=[];
+														Taluka=[];
+						     					 for(var i=1;i<count;i++)
+								                 {
+									                 if(document.getElementById("damType_"+i).value == "लघु" || document.getElementById("damType_"+i).value=="Minor")
+											            {
+									                  var lats=document.getElementById("latitude_"+i).value;
+															                    var logs=document.getElementById("longitude_"+i).value;
+															                     var l1=parseFloat(lats);
+																                    var l2=parseFloat(logs);
+															                    points_minor.push({lat: l1, lng: l2});
+																				RemoteId.push(document.getElementById("structureId_"+i).value);
+															                    StationName.push(document.getElementById("structureName_"+i).value);
+															                   	damType_Name.push(document.getElementById("damType_"+i).value); 
+															                 //  	Taluka.push(document.getElementById("taluka_id_"+i).value);
+									                  
+									                    
+									                          lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+									                        
+									                          
+									                              }
+						       					}//for	
+						       						color="pink";  
+						       					}
+						       					var flag=1;
+								 
+										} 
+				
+					}//if flag_check
+						             	   
+							
+								  	if( (select_major=="" && select_minor=="" && select_medium=="" && idcName1=="" && district=="") || document.getElementById("byStart"))
+										{
+							                 for(var i=1;i<count;i++)
+							                 {
+							                    var lats=document.getElementById("latitude_"+i).value;
+							                    var logs=document.getElementById("longitude_"+i).value;
+							                    
+							                    var l1=parseFloat(lats);
+							                    
+							                    var l2=parseFloat(logs);
+							                    
+							                    points.push({lat: l1, lng: l2});
+												damType_Name.push(document.getElementById("damType_"+i).value);
+							                    RemoteId.push(document.getElementById("structureId_"+i).value);
+							                    StationName.push(document.getElementById("structureName_"+i).value);
+							                    
+							                        lakelevel.push(document.getElementById("lakelevel_"+i).value);
+																			lakeleveldate.push(document.getElementById("lakeleveldate_"+i).value);
+																			percentagestorage.push(document.getElementById("percentagestorage_"+i).value);
+																			livestorage.push(document.getElementById("liveStorage_"+i).value);
+																		
+							                    var flag=0;
+							             	}   
+							             	color="black";                 
+					                 	} 
+					                 	
+									
+				
+				}
+			
+		<#--  		else{
+				
+				
+				
+							                 for(var i=1;i<count;i++)
+							                 {
+							                    var lats=document.getElementById("latitude_"+i).value;
+							                    var logs=document.getElementById("longitude_"+i).value;
+							                    
+							                    var l1=parseFloat(lats);
+							                    
+							                    var l2=parseFloat(logs);
+							                    
+							                    points.push({lat: l1, lng: l2});
+												damType_Name.push(document.getElementById("damType_"+i).value);
+							                    RemoteId.push(document.getElementById("structureId_"+i).value);
+							                    StationName.push(document.getElementById("structureName_"+i).value);
+							                    var flag=0;
+							             	} 
+							             	
+							             	                
+							             	                                color="white";                
+					    } 
+								-->	
+				 function set_icon(color){
+				 	globalVar=color;
+				 	return;
+      
+      			}
+					
+		
+					
+                 	var markers = [];
+    // alert("here");            	
+                 	
+    //for showing region kml by merging districts   
+         if(flag_kml_region==1){   
+//alert("inside flag"); 
+  let inputRegionId=document.getElementById("idcName1").value;          	          	
+  if (myRegionDictionary.hasOwnProperty(inputRegionId)) {
+  const arrayString = myRegionDictionary[inputRegionId];
+  const districtIdsArray = arrayString.match(/\d+/g).map(Number);
+
+
+  // Loop through the districtIdsArray
+  for (let i = 0; i < districtIdsArray.length; i++) {
+ var var1=myDistrictDictionary[districtIdsArray[i]];
+ //alert(var1);
+     kmlLayer = new google.maps.KmlLayer({
+    url: 'http://103.224.243.31:88/NHPKML1/for_regions_GIS/'+var1+'.kml',
+  });
+  
+  kmlLayer.setMap(map_to_send);
+  }//for loop districtArray
+} else {
+  console.log(`Region ID not found.`);
+}
+}        	
+                 	
+     //for showing district kmls            	
+                 
+              if(flag_district==1){
+              //alert(document.getElementById("district").value);
+              flag_kml_region=0;
+              var a1=myDistrictDictionary[document.getElementById("district").value]
+   //   alert("a1"+a1);
+              }
+              
+                 	       contentString=[];
+              kmlLayer = new google.maps.KmlLayer({
+    url: 'http://103.224.243.31:88/NHPKML1/districts_only_GIS/'+a1+'.kml',
+     
+  });
+  
+
+  
+  
+  kmlLayer.setMap(map_to_send);
+               
+                     for(var a=0;a<points.length;a++)
+                     {
+               		var tooltipData="";
+                    
+          var tooltipData="<div style='color:green; text-align:center;'>"
+								                 + "Dam Name : "+ StationName[a] + "<br>"
+								                   + "damType : "+ damType_Name[a] + "<br>"
+								            
+								                 + "date updated :"+lakeleveldate[a] + "<br>"+
+								                    "level : "+lakelevel[a] + "<br>"+
+								                   "percentagestorage : "+ percentagestorage[a] + "<br>"
+								                 + "livestorage : "+  livestorage[a] + "<br>"
+								                    
+								                 + "</div>";
+		                 
+			
+                     contentString.push(tooltipData);
+                    	 var marker='';
+                 		var iconUrl="";
+                  		var data = markers[a]
+                  		
+                  		
+                  		
+                    	marker= new google.maps.Marker({
+                             position: points[a],
+                             map: map,
+                             icon: {
+                               url: "http://localhost:3000/dam1.png",
+                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+                             },
+                             contentString:contentString[a],id:RemoteId[a]
+                            
+                         }); 
+                         
+                          markers.push(marker);
+                  var clicked = false;
+                  var infoWindow = new google.maps.InfoWindow();
+                  
+                  
+                     (function(marker, data) {
+                     // Attaching a click event to the current marker
+                     google.maps.event.addListener(marker, "click", function(e) {
+                        clicked = true;
+                      infoWindow.setContent(this.contentString);
+                     infoWindow.open(map, marker);
+                     });
+                     google.maps.event.addListener(marker, "mouseover", function(e) {
+                      if (!clicked)
+                        {
+                         infoWindow.setContent(this.contentString);
+                         infoWindow.open(map, marker);
+                       }
+                     });
+                     })(marker, data);
+
+
+
+
+                     google.maps.event.addListener(marker, 'mouseout', (function () {
+                           if (!clicked) {
+                               infoWindow.close();
+                             }
+                         }));
+                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+                         clicked = false;
+                       })
+                       
+                        marker.addListener('click', function(e) {
+                       	var id1=this.id;
+                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+                         document.location.href=url;
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         });
+                         
+                     }
+          
+                      for(var a=0;a<points_medium.length;a++)
+                     {
+                    
+                    
+                 var tooltipData="<div style='color:green; text-align:center;'>"
+								                 + "Dam Name : "+ StationName[a] + "<br>"
+								                   + "damType : "+ damType_Name[a] + "<br>"
+								            
+								                 + "date updated :"+lakeleveldate[a] + "<br>"+
+								                    "level : "+lakelevel[a] + "<br>"+
+								                   "percentagestorage : "+ percentagestorage[a] + "<br>"
+								                 + "livestorage : "+  livestorage[a] + "<br>"
+								                    
+								                 + "</div>";
+		                 
+								                 
+					
+                     contentString.push(tooltipData);
+                    	 var marker='';
+                 		var iconUrl="";
+                  		var data = markers[a]
+                  		
+                  		
+                  		
+                    	marker= new google.maps.Marker({
+                             position: points_medium[a],
+                             map: map,
+                             icon: {
+                               url: "http://localhost:3000/dam.png",
+                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+                             },
+                             contentString:contentString[a],id:RemoteId[a]
+                            
+                         }); 
+                         
+                          markers.push(marker);
+                  var clicked = false;
+                  var infoWindow = new google.maps.InfoWindow();
+                  
+                  
+                     (function(marker, data) {
+                     // Attaching a click event to the current marker
+                     google.maps.event.addListener(marker, "click", function(e) {
+                        clicked = true;
+                      infoWindow.setContent(this.contentString);
+                     infoWindow.open(map, marker);
+                     });
+                     google.maps.event.addListener(marker, "mouseover", function(e) {
+                      if (!clicked)
+                        {
+                         infoWindow.setContent(this.contentString);
+                         infoWindow.open(map, marker);
+                       }
+                     });
+                     })(marker, data);
+
+
+
+
+                     google.maps.event.addListener(marker, 'mouseout', (function () {
+                           if (!clicked) {
+                               infoWindow.close();
+                             }
+                         }));
+                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+                         clicked = false;
+                       })
+                       
+                        marker.addListener('click', function(e) {
+                       	var id1=this.id;
+                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+                         document.location.href=url;
+                         });
+                                                  
+                     }
+                        for(var a=0;a<points_minor.length;a++)
+                     {
+                    
+       var tooltipData="<div style='color:green; text-align:center;'>"
+								                 + "Dam Name : "+ StationName[a] + "<br>"
+								                   + "damType : "+ damType_Name[a] + "<br>"
+								            
+								                 + "date updated :"+lakeleveldate[a] + "<br>"+
+								                    "level : "+lakelevel[a] + "<br>"+
+								                   "percentagestorage : "+ percentagestorage[a] + "<br>"
+								                 + "livestorage : "+  livestorage[a] + "<br>"
+								                    
+								                 + "</div>";
+
+					
+                     contentString.push(tooltipData);
+                    	 var marker='';
+                 		var iconUrl="";
+                  		var data = markers[a]
+           		
+                    	marker= new google.maps.Marker({
+                             position: points_minor[a],
+                             map: map,
+                             icon: {
+                               url: "http://localhost:3000/dam.png",
+                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+                             },
+                             contentString:contentString[a],id:RemoteId[a]
+                            
+                         }); 
+                         
+                          markers.push(marker);
+                  var clicked = false;
+                  var infoWindow = new google.maps.InfoWindow();
+                  
+                  
+                     (function(marker, data) {
+                     // Attaching a click event to the current marker
+                     google.maps.event.addListener(marker, "click", function(e) {
+                        clicked = true;
+                      infoWindow.setContent(this.contentString);
+                     infoWindow.open(map, marker);
+                     });
+                     google.maps.event.addListener(marker, "mouseover", function(e) {
+                      if (!clicked)
+                        {
+                         infoWindow.setContent(this.contentString);
+                         infoWindow.open(map, marker);
+                       }
+                     });
+                     })(marker, data);
+
+
+
+
+                     google.maps.event.addListener(marker, 'mouseout', (function () {
+                           if (!clicked) {
+                               infoWindow.close();
+                             }
+                         }));
+                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+                         clicked = false;
+                       })
+                       
+                        marker.addListener('click', function(e) {
+                       	var id1=this.id;
+                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+                         document.location.href=url;
+                         });
+                         
+                     }
+                     
+
+                      for(var a=0;a<points_major.length;a++)
+                     {
+                    
+                 var tooltipData="<div style='color:green; text-align:center;'>"
+								                 + "Dam Name : "+ StationName[a] + "<br>"
+								                   + "damType : "+ damType_Name[a] + "<br>"
+								            
+								                 + "date updated :"+lakeleveldate[a] + "<br>"+
+								                    "level : "+lakelevel[a] + "<br>"+
+								                   "percentagestorage : "+ percentagestorage[a] + "<br>"
+								                 + "livestorage : "+  livestorage[a] + "<br>"
+								                    
+								                 + "</div>";
+		                 
+								//	alert(tooltipData);	                 
+					
+                     contentString.push(tooltipData);
+                    	 var marker='';
+                 		var iconUrl="";
+                  		var data = markers[a]
+                  		
+                  		
+                  		
+                    	marker= new google.maps.Marker({
+                             position: points_major[a],
+                             map: map,
+                             icon: {
+                               url: "http://localhost:3000/dam.png",
+                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+                             },
+                             contentString:contentString[a],id:RemoteId[a]
+                            
+                         }); 
+                         
+                          markers.push(marker);
+                  var clicked = false;
+                  var infoWindow = new google.maps.InfoWindow();
+                  
+                  
+                     (function(marker, data) {
+                     // Attaching a click event to the current marker
+                     google.maps.event.addListener(marker, "click", function(e) {
+                        clicked = true;
+                      infoWindow.setContent(this.contentString);
+                     infoWindow.open(map, marker);
+                     });
+                     google.maps.event.addListener(marker, "mouseover", function(e) {
+                      if (!clicked)
+                        {
+                         infoWindow.setContent(this.contentString);
+                         infoWindow.open(map, marker);
+                       }
+                     });
+                     })(marker, data);
+
+
+
+
+                     google.maps.event.addListener(marker, 'mouseout', (function () {
+                           if (!clicked) {
+                               infoWindow.close();
+                             }
+                         }));
+                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+                         clicked = false;
+                       })
+                       
+                        marker.addListener('click', function(e) {
+                       	var id1=this.id;
+                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+                         document.location.href=url;
+                         });
+                         
+                     }
+                     
+                      for(var a=0;a<points_medium.length;a++)
+                     {
+                    
+                var tooltipData="<div style='color:green; text-align:center;'>"
+								                 + "<b>" + StationName[a] + "</b><br>"
+								                 + "<b>" + damType_Name[a] + "</b><br>"
+								                 + "<b>" + percentagestorage[a] + "</b><br>"
+								                     + "<b>" + lakeleveldate[a] + "</b><br>"
+								                 + "<b>" + livestorage[a] + "</b><br>"+
+								                         + "<b>" + lakelevel[a] + "</b><br>"
+								                 + "</div>";
+								                 
+								                 
+								                var tooltipData="<div style='color:green; text-align:center;'>"
+												      
+								            + "Dam Name : "+stationName[m][a] + "<br>"
+										                + "damType : "+ damType_Name[m][a] +  "<br>"+ 
+												          "date updated :"+ x[0][a] + "<br>"+
+												                   "level : "+x[1][a] + "<br>"+
+												                   "percentagestorage : "+ x[2][a] + "<br>"
+												          + "livestorage : "+x[3][a] + "<br>"
+												       
+												                 + "</div>";   
+					
+                     contentString.push(tooltipData);
+                    	 var marker='';
+                 		var iconUrl="";
+                  	
+                  		
+                  		
+                  		
+                    	marker= new google.maps.Marker({
+                             position: points_medium[a],
+                             map: map,
+                             icon: {
+                               url: "http://localhost:3000/dam.png",
+                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+                             },
+                             contentString:contentString[a],id:RemoteId[a]
+                            
+                         }); 
+                         
+                          markers.push(marker);
+                          	var data = markers[a];
+                  var clicked = false;
+                  var infoWindow = new google.maps.InfoWindow();
+                  
+                  
+                     (function(marker, data) {
+                     // Attaching a click event to the current marker
+                     google.maps.event.addListener(marker, "click", function(e) {
+                        clicked = true;
+                      infoWindow.setContent(this.contentString);
+                     infoWindow.open(map, marker);
+                     });
+                     
+                     
+                     
+                     google.maps.event.addListener(marker, "mouseover", function(e) {
+                      if (!clicked)
+                        {
+                         infoWindow.setContent(this.contentString);
+                         infoWindow.open(map, marker);
+                       }
+                     });
+                     })(marker, data);
+
+
+
+
+                     google.maps.event.addListener(marker, 'mouseout', (function () {
+                           if (!clicked) {
+                               infoWindow.close();
+                             }
+                         }));
+                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+                         clicked = false;
+                       })
+                       
+                        marker.addListener('click', function(e) {
+                       	var id1=this.id;
+                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+                         document.location.href=url;
+                         });
+                         
+   
+                     } 
+                     
+                     <#-- 5 th august -->
+             if  (flag_check==1 ){
+                
+alert("flag_check==1");
+
+          			 select_for_major_minor_medium(points_major_region,points_medium_region,points_minor_region,StationName_major_region,StationName_medium_region,StationName_minor_region,
+          			 damType_Name_major_region,damType_Name_medium_region,damType_Name_minor_region, RemoteId_major_region,RemoteId_medium_region,RemoteId_minor_region,markers, 
+          			 lakeleveldate_major_region,lakelevel_major_region,percentagestorage_major_region,  livestorage_major_region, 
+          			 lakeleveldate_medium_region,lakelevel_medium_region,percentagestorage_medium_region,  livestorage_medium_region, 
+          			 lakeleveldate_minor_region,lakelevel_minor_region,percentagestorage_minor_region,  livestorage_minor_region, 
+          			 map);
+          			
+          			 	}
+          		
+          	
+          		 	
+          		 	else if( flag_check==2){
+          			 	select_for_major_minor_medium(points_major_district,points_medium_district,points_minor_district,StationName_major_district,StationName_medium_district,StationName_minor_district,
+          			 damType_Name_major_district,damType_Name_medium_district,damType_Name_minor_district, RemoteId_major_district,RemoteId_medium_district,RemoteId_minor_district,markers,
+          			   lakeleveldate_major_district,lakelevel_major_district,percentagestorage_major_district,  livestorage_major_district, 
+          			          			 lakeleveldate_medium_district,lakelevel_medium_district,percentagestorage_medium_district,  livestorage_medium_district,    			  
+          			           			 lakeleveldate_minor_district,lakelevel_minor_district,percentagestorage_minor_district,  livestorage_minor_district,map);
+          			
+          			 	}  
+          			 	  
+          			 		 else if (flag_check==3){
+          			 	select_for_major_minor_medium(points_major_taluka,points_medium_taluka,points_minor_taluka,StationName_major_taluka,StationName_medium_taluka,StationName_minor_taluka,
+          			 damType_Name_major_taluka,damType_Name_medium_taluka,damType_Name_minor_taluka, RemoteId_major_taluka,RemoteId_medium_taluka,RemoteId_minor_taluka,markers,
+          			 
+          			 lakeleveldate_major_taluka,lakelevel_major_taluka,percentagestorage_major_taluka,  livestorage_major_taluka, 
+          			 
+          			 lakeleveldate_medium_taluka,lakelevel_medium_taluka,percentagestorage_medium_taluka,  livestorage_medium_taluka,
+          			 lakeleveldate_minor_taluka,lakelevel_minor_taluka,percentagestorage_minor_taluka,  livestorage_minor_taluka ,map);
+          			
+          			 	}	
+          			
+       	 	
+
+            //alert("i came back to initialie");
+                 contentString=[];
+                 
+      }
+ 
+  function select_for_major_minor_medium(pt1,pt2,pt3,sn1,sn2,sn3,dn1,dn2,dn3,rm1,rm2,rm3,markers,  
+  lakeleveldate_received_major,lakelevel_received_major,percentagestorage_received_major,  livestorage_received_major,
+    lakeleveldate_received_medium,lakelevel_received_medium,percentagestorage_received_medium,  livestorage_received_medium,
+      lakeleveldate_received_minor,lakelevel_received_minor,percentagestorage_received_minor,  livestorage_received_minor,
+  map_to_send) {
+
+
+  
+    var arr = [pt1,pt2,pt3];
+
+    var color=["pink","red","blue"];
+    var major_group=[lakeleveldate_received_major,lakelevel_received_major,percentagestorage_received_major,  livestorage_received_major];
+
+    
+	
+    var medium_group=[lakeleveldate_received_medium,lakelevel_received_medium,percentagestorage_received_medium,  livestorage_received_medium];
+
+    
+  var minor_group    =[lakeleveldate_received_minor,lakelevel_received_minor,percentagestorage_received_minor,  livestorage_received_minor];
+
+    
+
+    
+  
+  var choose_group=[major_group,medium_group,minor_group];
+
+	    var stationName=[sn1,sn2,sn3];
+	    var damType_Name=[dn1,dn2,dn3];
+	    icon=["dam","dam1","green"];
+	    
+	  var contentString = [];
+	
+	
+	  for (let i = 0; i < markers.length; i++) {
+	    markers[i].setMap(null); // Remove the marker from the map
+	  }
+	
+	  markers = [];
+	
+	
+	
+	  var pointsString = JSON.stringify(arr);
+
+	
+	  kmlLayer = new google.maps.KmlLayer({
+	    url: 'http://103.224.243.31:88/NHPKML1/regions_kml/Maharastra_State_Boundary.kml',
+	  });
+	  kmlLayer.setMap(map_to_send);
+	
+	  var pointsString1="";
+		for(let m=0;m<(arr.length);m++){
+		var x=choose_group[m];
+					      var contentString = [];
+					      var icon_test='http://localhost:3000/'+icon[m]+'.png'
+					alert(icon_test);
+						  for (let a = 0; a < arr[m].length; a++) {
+					
+			
+					           	     var tooltipData="<div style='color:green; text-align:center;'>"
+												      
+								            + "Dam Name : "+stationName[m][a] + "<br>"
+										                + "damType : "+ damType_Name[m][a] +  "<br>"+ 
+												          "date updated :"+ x[0][a] + "<br>"+
+												                   "level : "+x[1][a] + "<br>"+
+												                   "percentagestorage : "+ x[2][a] + "<br>"
+												          + "livestorage : "+x[3][a] + "<br>"
+												       
+												                 + "</div>";
+												                 
+									     contentString.push(tooltipData);
+						                    
+						                  		
+						                  		
+						                  		
+						                  			marker= new google.maps.Marker({
+				                             position: arr[m][a],
+				                             map: map,
+				                             icon: {
+				                               url: 'http://localhost:3000/'+icon[m]+'.png',
+				                               labelOrigin: new google.maps.Point(11, 25),scaledSize: new google.maps.Size(20, 20),
+				                             },
+				                             contentString:contentString[a]
+				                            
+				                         }); 
+				                         
+				                          markers.push(marker);
+				                          	var data = markers[a];
+				                  var clicked = false;
+				                  var infoWindow = new google.maps.InfoWindow();
+				                  
+				                  
+				                     (function(marker, data) {
+				                     // Attaching a click event to the current marker
+				                     google.maps.event.addListener(marker, "click", function(e) {
+				                        clicked = true;
+				                      infoWindow.setContent(this.contentString);
+				                     infoWindow.open(map, marker);
+				                     });
+				                     
+				                     
+				                     
+				                     google.maps.event.addListener(marker, "mouseover", function(e) {
+				                      if (!clicked)
+				                        {
+				                         infoWindow.setContent(this.contentString);
+				                         infoWindow.open(map, marker);
+				                       }
+				                     });
+				                     })(marker, data);
+				
+				
+				
+				
+				                     google.maps.event.addListener(marker, 'mouseout', (function () {
+				                           if (!clicked) {
+				                               infoWindow.close();
+				                             }
+				                         }));
+				                         google.maps.event.addListener(infoWindow,'closeclick',function() {
+				                         clicked = false;
+				                       })
+				                       
+				                        marker.addListener('click', function(e) {
+				                       	var id1=this.id;
+				                         let url ="<@ofbizUrl>ViewRemoteLocationDetails</@ofbizUrl>?remoteId="+id1;
+				                         document.location.href=url;
+				                         });
+				                         
+						                  		
+					                  		
+					   
+					  }
+	}	  
+}
+
+     
+    	
+    	   
+    	   
+    	    function removeAllOptions(selectbox) 
+    	   {
+    	   	var i;
+    	   	for (i = selectbox.options.length; i >= 1; i--) {
+    	   		selectbox.remove(i);
+    	   	}
+    	   }
+ function getSubBasin(id)
+    {
+    	$.ajax({
+    	    url:'<@ofbizUrl>getSubBasin</@ofbizUrl>',
+    	    type: 'get',
+    	    data: { 
+    	    	basinId:id.value
+    	    },        
+    	    success: function (response)
+    	    {
+    	    		removeAllOptions(document.searchMap.subbasin);
+    	    		for(var i = 0 ; i < response.length ; i++)
+    	    		{ 
+    		            document.searchMap.subbasin.options[i+1]=new Option(response[i]["basinName"], response[i]["subBasinId"]);
+    		        }
+    		        initialize(id.value);
+    	    },
+    	    error: function () {
+    	        console.log("Ajax error !!!");
+    	    },
+    	});
+    }
+    
+     function getRemoteStationDetails(id)
+    {
+    
+   var rainfallSt = document.getElementById("rainfallSt").checked;
+   var riverSt = document.getElementById("riverSt").checked;
+   var damSt = document.getElementById("damSt").checked;
+   var fcsSt = document.getElementById("fcsSt").checked;
+   var newPoints = [];
+    	$.ajax({
+    	    url:'<@ofbizUrl>getRemoteStationDetails</@ofbizUrl>',
+    	    type: 'get',
+    	    data: { 
+    	    	rainfallSt:rainfallSt, 
+    	    	riverSt:riverSt,
+    	    	damSt:damSt,
+    	    	fcsSt:fcsSt
+    	    	
+    	    },        
+    	    success: function (response)
+    	    {
+    	    		for(var i = 0 ; i < response.length ; i++)
+    	    		{ 
+    	    		console.log("Ajax success !!!");
+    		           newPoints.push({lat: response[i]["mstlatitude"], lng: response[i]["mstlongitude"]});
+    		        }
+    		        initialize(id.value);
+    	    },
+    	    error: function () {
+
+    	        console.log("Ajax error !!!");
+    	          initialize();
+    	    },
+    	});
+    }
+    
+    function getTaluk(id)
+    {
+    	$.ajax({
+    	    url:'<@ofbizUrl>getTaluk</@ofbizUrl>',
+    	    type: 'get',
+    	    data: { 
+    	    	districtId:id.value
+    	    },        
+    	    success: function (response)
+    	    {
+    	    	document.getElementById("tehsil").style.display = "block";
+    	    	document.getElementById("tehsilLabel").style.display = "block";
+    	    	 var tehsilDropdown = document.getElementById("tehsil");
+					removeAllOptions(tehsilDropdown);
+    	    		for(var i = 0 ; i < response.length ; i++)
+    	    		{ 
+    		            document.getElementById("tehsil").options[i+1]=new Option(response[i]["name"], response[i]["talukId"]);
+    		        }
+    		               initialize(id.value);	
+    		      
+    	    },
+    	    error: function () {
+    	        console.log("Ajax error !!!");
+    	    },
+    	});
+    }
+    
+     function getVillage(id)
+    {
+    	$.ajax({
+    	    url:'<@ofbizUrl>getVillage</@ofbizUrl>',
+    	    type: 'get',
+    	    data: { 
+    	    	talukId:id.value
+    	    },        
+    	    success: function (response)
+    	    {
+    	    	
+    		               initialize(parseInt(response));
+    		      
+    	    },
+    	    error: function () {
+    	        console.log("Ajax error !!!");
+    	    },
+    	});
+    }
+    
+    
+     function getDistrict(id)
+    {
+
+
+    
+    	$.ajax({
+    	    url:'<@ofbizUrl>getDistrict</@ofbizUrl>',
+    	    type: 'get',
+    	    data: { 
+    	    	regionId:id.value
+    	    },        
+    	    success: function (response)
+    	    {
+    	    		
+		    	    var districtDropdown = document.getElementById("district");
+					removeAllOptions(districtDropdown);
+    	    
+    	    		var uniqueDistrictIds = new Set();
+
+for (var i = 0; i < response.length; i++) {
+    var districtId = response[i]["district_id"];
+    
+    // Check if the district_id is already in the Set
+    if (!uniqueDistrictIds.has(districtId)) {
+        uniqueDistrictIds.add(districtId);
+        document.getElementById("district").options.add(new Option(response[i]["district_name"], districtId));
+    }
+}
+    		          			document.getElementById("tehsil").style.display = "none";
+    	    	document.getElementById("tehsilLabel").style.display = "none";
+    		          initialize(id.value);
+    		             
+    	    },
+    	    error: function () {
+    	        console.log("Ajax error !!!");
+    	    },
+    	});
+    }
+    
+  function belowOffice(id)
+   {
+var wingType=document.searchDamIns.wingType.value;
+   
+    $.ajax({
+       url:'<@ofbizUrl>getBelowOffice</@ofbizUrl>',
+       type: 'get',
+       data: {
+        officeId:id.value+','+wingType    
+       },        
+       success: function (response) {
+        if(id.id=="idcName"){
+        removeAllOptions(document.searchDamIns.regionName);
+        removeAllOptions(document.searchDamIns.circleName);
+        removeAllOptions(document.searchDamIns.divName);
+        removeAllOptions(document.searchDamIns.subDivName);
+        for(var i = 0 ; i < response.length ; i++){
+               document.searchDamIns.regionName.options[i+1]=new Option(response[i]["name"], response[i]["officeID"]);
+           }
+        }else if(id.id=="regionName"){
+
+        removeAllOptions(document.searchDamIns.circleName);
+        removeAllOptions(document.searchDamIns.divName);
+        removeAllOptions(document.searchDamIns.subDivName);
+        for(var i = 0 ; i < response.length ; i++){
+               document.searchDamIns.circleName.options[i+1]=new Option(response[i]["name"], response[i]["officeID"]);
+           }
+        }else if(id.id=="circleName"){
+        removeAllOptions(document.searchDamIns.divName);
+        removeAllOptions(document.searchDamIns.subDivName);
+        for(var i = 0 ; i < response.length ; i++){
+               document.searchDamIns.divName.options[i+1]=new Option(response[i]["name"], response[i]["officeID"]);
+           }
+        }else if(id.id=="divName"){
+       
+        removeAllOptions(document.searchDamIns.subDivName);
+        for(var i = 0 ; i < response.length ; i++){
+               document.searchDamIns.subDivName.options[i+1]=new Option(response[i]["name"], response[i]["officeID"]);
+           }
+        }
+       
+       },
+       error: function () {
+           console.log("Ajax error !!!");
+       },
+    });
+     alert(id.value);
+        initialize(id.value);
+   }
+   
+
+   function removeAllOptions(selectbox) {
+   	var i;
+   	for (i = selectbox.options.length; i >= 1; i--) {
+   		selectbox.remove(i);
+   	}
+   }
+    function removeAllOptions(selectbox) {
+    var i;
+    for (i = selectbox.options.length; i >= 1; i--) {
+    selectbox.remove(i);
+    }
+   }
+   
+   function CommonChange(id)
+   {
+   		var AdminkBox = document.getElementById("customRadio1").checked;
+		var OfcBox = document.getElementById("customRadio2").checked;
+		var BasinBox = document.getElementById("customRadio2").checked;
+		
+		if(AdminkBox==true || BasinBox==true)
+		{
+			var idcId = document.getElementById("idcName").value="";
+			var regionId = document.getElementById("regionName").value="";
+			var circleId = document.getElementById("circleName").value="";
+			var divId = document.getElementById("divName").value="";
+			var subDivId = document.getElementById("subDivName").value="";
+		}
+      initialize();  
+   }
+
+
+function myFunction() {
+var markers = [];
+var kmlLayer;
+
+  // If the "Major Dams" option is clicked, remove existing markers and display KML
+  if (document.getElementById("customRadio3").checked) {
+    // Remove existing markers
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+
+    // Add KML Layer for major dams
+    if (kmlLayer) {
+      kmlLayer.setMap(null);
+    }
+  
+  }
+}
+
+</script>
+
+
+
+  
+																	  
+<#--  
+
+  regionId_arr.push(document.getElementById("regionId"+i).value);
+			                    circleId_arr.push(document.getElementById("circleId"+i).value);
+			                    divId_arr.push(document.getElementById("divId"+i).value);
+			               
+			                    subDivId_arr.push(document.getElementById("subDivId"+i).value);
+
+
+   regionId_arr.push(document.getElementById("regionId"+i).value);
+			                    circleId_arr.push(document.getElementById("circleId"+i).value);
+			                    divId_arr.push(document.getElementById("divId"+i).value); -->
